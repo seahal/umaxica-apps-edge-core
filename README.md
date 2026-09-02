@@ -1,0 +1,1 @@
+# umaxica-apps-edge-core
