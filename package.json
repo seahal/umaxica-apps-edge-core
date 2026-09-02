@@ -1,0 +1,39 @@
+{
+  "name": "umaxica-apps-edge-core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "format": "pnpm -r --if-present run format && oxfmt .",
+    "format:check": "pnpm -r --if-present run format:check && oxfmt --check .",
+    "lint": "pnpm -r --if-present run lint && oxlint --report-unused-disable-directives .",
+    "lint:fix": "pnpm -r --if-present run lint:fix && oxlint --type-aware --fix .",
+    "lint:types": "pnpm -r --if-present run lint:types && oxlint --type-aware --report-unused-disable-directives .",
+    "typecheck": "pnpm -r --if-present run typecheck && tsc --noEmit",
+    "test": "pnpm -r --if-present run test && vitest run --dir test",
+    "check:static": "pnpm run format:check && pnpm run lint && pnpm run lint:types && pnpm run typecheck",
+    "check": "pnpm run check:static && pnpm run test",
+    "prepare": "lefthook install"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "lefthook": "^2.1.12",
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.0.0",
+      "onFail": "download"
+    },
+    "runtime": {
+      "name": "node",
+      "version": "24.20.0",
+      "onFail": "warn"
+    }
+  }
+}

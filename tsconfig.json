@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    // The repository-invariant suite under `test/` imports `describe` / `it` /
+    // `expect` from `vitest` rather than relying on `globals: true`, which is
+    // the per-unit convention. Under TypeScript 7 `types` defaults to `[]`, so
+    // the ambient declarations have to be asked for by name.
+    "types": ["vitest/globals", "node"],
+    // The quality policy the deployment units share. It is repeated here rather
+    // than `extends`-ed, matching `umaxica-apps-edge`: a unit has to stay valid
+    // when it is lifted into its own repository, and a root `extends` is exactly
+    // the coupling that stops being true. `target` / `module` / `lib` / `jsx`
+    // above are framework mechanics and are NOT part of that shared policy.
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  // Scoped to what the root actually owns: the invariant suite. The units bring
+  // their own tsconfig and are typechecked by their own `typecheck` script,
+  // which the root fans out to.
+  //
+  // Note this differs from `umaxica-apps-edge`, where the root `typecheck`
+  // script only fans out and nothing ever runs `tsc` against the root config —
+  // so its own invariant suite is not typechecked. Here `pnpm run typecheck`
+  // ends with `tsc --noEmit`, which reads this file.
+  "include": ["test/**/*"],
+  "exclude": ["node_modules", "**/node_modules"]
+}
