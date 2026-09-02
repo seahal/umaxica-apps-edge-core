@@ -1,0 +1,49 @@
+# Modelled on `umaxica-apps-edge`'s hook file, trimmed to the checks this
+# repository actually owns today. The shape is deliberately the same so that
+# when the three `core` units arrive, the missing commands can be added back
+# without rethinking the split between the two hooks.
+#
+# `pre-commit` is scoped to STAGED files: cost scales with the commit rather
+# than the repository, which is what keeps it something people leave enabled.
+pre-commit:
+  parallel: true
+  commands:
+    format:
+      glob: '*.{js,jsx,ts,tsx,mjs,cjs,json,jsonc,yaml,yml,md,mdx}'
+      run: pnpm exec oxfmt {staged_files}
+      stage_fixed: true
+    # No `--type-aware` here on purpose: the type-aware pass needs a whole
+    # program and is a pre-push cost, not a per-commit one. `pre-push` and CI
+    # both run it.
+    lint:
+      glob: '*.{js,jsx,ts,tsx,mjs,cjs}'
+      run: pnpm exec oxlint {staged_files}
+    # Structure only, and it reads a directory that is usually absent, so it
+    # costs nothing on the commits that do not touch `evidence/`. It is listed
+    # separately from `test` below because it is the one invariant that is
+    # meaningful before any application code exists.
+    evidence-layout:
+      run: pnpm exec vitest run --dir test evidence-layout
+
+# Whole-repository questions only. `piped: true` stops at the first failure, so
+# the ordering below decides how long a developer waits — cheapest first.
+# Without it lefthook runs every command even after one has failed, and a
+# formatting slip would still cost a full typecheck before being reported.
+pre-push:
+  piped: true
+  commands:
+    format:
+      priority: 1
+      run: pnpm run format:check
+    lint:
+      priority: 2
+      run: pnpm run lint
+    lint-types:
+      priority: 3
+      run: pnpm run lint:types
+    typecheck:
+      priority: 4
+      run: pnpm run typecheck
+    test:
+      priority: 5
+      run: pnpm run test

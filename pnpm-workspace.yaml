@@ -1,0 +1,60 @@
+# Three deployment units, extracted from `umaxica-apps-edge`. They do not exist
+# in the tree yet: this file is the contract they land against, so that the move
+# is a directory copy rather than a rewrite of every manifest.
+#
+# The paths are globs on purpose. pnpm treats a literal path that matches no
+# directory as a configuration error, and until the units arrive there is no
+# `app/core` to point at. `app/*` matches nothing today and matches exactly the
+# unit tomorrow.
+packages:
+  - app/*
+  - com/*
+  - org/*
+
+# Copied verbatim from `umaxica-apps-edge`, because the units reference every
+# entry below as `catalog:` and a missing key fails the install rather than
+# falling back. Entries are NOT trimmed to what is currently importable — the
+# units are the consumers and they are not here yet. When the extraction is
+# done, whatever is still unreferenced can be dropped in one pass.
+catalog:
+  '@cloudflare/vite-plugin': ^1.54.1
+  '@cloudflare/workers-types': ^5.20260827.1
+  '@fontsource-variable/inter': ^5.3.0
+  '@orangeopensource/hurl': ^8.0.4
+  '@playwright/test': ^1.62.1
+  '@size-limit/file': ^13.0.3
+  '@tailwindcss/vite': ^4.3.3
+  '@tanstack/react-router': ^1.170.32
+  '@tanstack/react-start': ^1.168.49
+  '@testing-library/jest-dom': ^7.0.1
+  '@testing-library/react': ^16.3.3
+  '@types/node': ^26.4.0
+  '@types/react': ^19.2.18
+  '@types/react-dom': ^19.2.5
+  '@vitejs/plugin-react': ^6.1.1
+  '@vitest/coverage-v8': 4.1.11
+  happy-dom: ^20.11.15
+  knip: ^6.34.0
+  oxfmt: ^0.65.0
+  oxlint: 1.80.0
+  oxlint-tsgolint: ^7.0.2001
+  react: ^19.2.8
+  react-aria-components: ^1.20.0
+  react-dom: ^19.2.8
+  size-limit: ^13.0.3
+  tailwindcss: ^4.3.3
+  tailwindcss-react-aria-components: ^2.2.0
+  typescript: ^7.0.2
+  vite: ^8.2.2
+  vitest: ^4.1.11
+  wrangler: ^4.127.1
+
+# `ignore-scripts=true` in `.npmrc` is the default posture; these are the
+# packages whose install scripts are genuinely required. Carried over from
+# `umaxica-apps-edge` for the same reasons recorded there — notably hurl, whose
+# npm package is a thin installer that fetches the real binary.
+allowBuilds:
+  '@orangeopensource/hurl': true
+  esbuild: true
+  lefthook: true
+  workerd: true
